@@ -78,6 +78,7 @@ extension Connection {
         } else {
             response = try await internalConnection.send(apdu: apdu)
         }
+        Logger.connection.debug("Connection+Extension, \(#function): response status: \(response.responseStatus.rawStatus.data.hexEncodedString)")
         
         guard response.responseStatus.status == .ok || response.responseStatus.sw1 == 0x61 else {
             Logger.connection.error("Connection+Extension, \(#function): failed with statusCode: \(response.responseStatus.rawStatus.data.hexEncodedString)")
@@ -88,7 +89,7 @@ extension Connection {
         if response.responseStatus.sw1 == 0x61 {
             return try await sendRecursive(apdu: apdu, data: newData, readMoreData: true)
         } else {
-            Logger.connection.debug("Connection+Extension, \(#function): response: \(newData.hexEncodedString)")
+            Logger.connection.debug("Connection+Extension, \(#function): response: \(newData) \(newData.hexEncodedString)")
             return newData
         }
     }
