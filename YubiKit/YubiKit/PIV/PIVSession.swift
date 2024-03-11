@@ -52,7 +52,7 @@ public final actor PIVSession: Session, InternalSession {
         } catch {
             self.version = Version(withString: "0.0.0")!
         }
-        Logger.oath.debug("\(String(describing: self).lastComponent), \(#function): \(String(describing: version))")
+        Logger.piv.debug("\(String(describing: self).lastComponent), \(#function): \(String(describing: self.version))")
         self._connection = connection
         let internalConnection = await internalConnection()
         await internalConnection?.setSession(self)
