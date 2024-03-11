@@ -44,10 +44,14 @@ public final actor PIVSession: Session, InternalSession {
     private init(connection: Connection) async throws {
         try await connection.selectApplication(.piv)
         let versionApdu = APDU(cla: 0, ins: 0xfd, p1: 0, p2: 0)
-        guard let version = try await Version(withData: connection.send(apdu: versionApdu)) else {
-            throw PIVSessionError.dataParseError
+//        guard let version = try await Version(withData: connection.send(apdu: versionApdu)) else {
+//            throw PIVSessionError.dataParseError
+//        }
+        do {
+            self.version = try await Version(withData: connection.send(apdu: versionApdu))!
+        } catch {
+            self.version = Version(withString: "0.0.0")!
         }
-        self.version = version
         Logger.oath.debug("\(String(describing: self).lastComponent), \(#function): \(String(describing: version))")
         self._connection = connection
         let internalConnection = await internalConnection()
